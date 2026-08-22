@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { loginUser } from '../api/authApi'
 import ErrorMessage from '../components/common/ErrorMessage'
 import Loading from '../components/common/Loading'
@@ -12,6 +12,7 @@ const emptyForm = {
 
 export default function Login() {
   const navigate = useNavigate()
+  const location = useLocation()
   const { login } = useAuth()
   const [form, setForm] = useState(emptyForm)
   const [loading, setLoading] = useState(false)
@@ -30,7 +31,7 @@ export default function Login() {
         email: result.email,
         token: result.token,
       })
-      navigate('/', { replace: true })
+      navigate(location.state?.from || '/', { replace: true })
     } catch (err) {
       setError(err.message)
     } finally {

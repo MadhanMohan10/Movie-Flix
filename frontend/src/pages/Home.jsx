@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { createRental, getMyRentals } from '../api/rentalApi'
+import { getMyRentals } from '../api/rentalApi'
 import { getMoviesByGenres, getPopularMovies, searchMovies } from '../api/movieApi'
 import ErrorMessage from '../components/common/ErrorMessage'
 import Loading from '../components/common/Loading'
@@ -23,7 +23,6 @@ export default function Home() {
     data: null,
   })
   const [rentedMovieIds, setRentedMovieIds] = useState([])
-  const [notice, setNotice] = useState(null)
 
   useEffect(() => {
     let active = true
@@ -176,20 +175,8 @@ export default function Home() {
     await showPopular(nextPage)
   }
 
-  async function handleRent(movieId) {
-    if (!isAuthenticated) {
-      navigate('/login')
-      return
-    }
-
-    setNotice(null)
-    try {
-      const rental = await createRental(movieId, auth.token)
-      setNotice({ type: 'success', text: `Rental created successfully. Rental ID ${rental.id}.` })
-      setRentedMovieIds((current) => Array.from(new Set([...current, movieId])))
-    } catch (error) {
-      setNotice({ type: 'danger', text: error.message })
-    }
+  function handleRent(movieId) {
+    navigate(`/checkout/${movieId}`)
   }
 
   const movies = catalogState.data?.results ?? []
@@ -231,7 +218,6 @@ export default function Home() {
         />
       </section>
 
-      {notice ? <div className={`alert alert-${notice.type} mt-4`}>{notice.text}</div> : null}
       <ErrorMessage message={catalogState.error} />
 
       <section className="mt-4">

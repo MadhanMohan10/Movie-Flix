@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { getMovieDetails } from '../api/movieApi'
-import { createRental, getMyRentals } from '../api/rentalApi'
+import { getMyRentals } from '../api/rentalApi'
 import Loading from '../components/common/Loading'
 import ErrorMessage from '../components/common/ErrorMessage'
 import MovieDetails from '../components/movie/MovieDetails'
@@ -15,7 +15,6 @@ export default function MovieDetailsPage() {
   const [rentedMovieIds, setRentedMovieIds] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
-  const [notice, setNotice] = useState(null)
 
   useEffect(() => {
     let active = true
@@ -67,20 +66,8 @@ export default function MovieDetailsPage() {
 
   const isRented = rentedMovieIds.includes(Number(movieId))
 
-  async function handleRent(id) {
-    if (!isAuthenticated) {
-      navigate('/login')
-      return
-    }
-
-    setNotice(null)
-    try {
-      const rental = await createRental(id, auth.token)
-      setNotice({ type: 'success', text: `Rental created successfully. Rental ID ${rental.id}.` })
-      setRentedMovieIds((current) => Array.from(new Set([...current, id])))
-    } catch (err) {
-      setNotice({ type: 'danger', text: err.message })
-    }
+  function handleRent(id) {
+    navigate(`/checkout/${id}`)
   }
 
   return (
@@ -93,7 +80,6 @@ export default function MovieDetailsPage() {
 
       {loading ? <Loading label="Loading movie details..." /> : null}
       <ErrorMessage message={error} />
-      {notice ? <div className={`alert alert-${notice.type}`}>{notice.text}</div> : null}
       {movie ? <MovieDetails movie={movie} isLoggedIn={isAuthenticated} onRent={handleRent} rented={isRented} /> : null}
     </main>
   )

@@ -434,6 +434,97 @@
   margin-top: -1rem;
 }
 
+.checkout-page {
+  min-height: 100vh;
+  background:
+    linear-gradient(180deg, rgba(5, 8, 22, 0.9), rgba(7, 17, 31, 0.98)),
+    url('https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?auto=format&fit=crop&w=1800&q=80')
+      center/cover fixed;
+}
+
+.checkout-shell {
+  position: relative;
+  z-index: 1;
+}
+
+.checkout-card {
+  background: rgba(2, 6, 23, 0.82);
+}
+
+.checkout-hero {
+  display: grid;
+  grid-template-columns: 10rem minmax(0, 1fr);
+  gap: 1rem;
+  align-items: start;
+}
+
+.checkout-poster {
+  width: 100%;
+  border-radius: 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.28);
+}
+
+.checkout-title {
+  color: #fff;
+  font-size: clamp(1.7rem, 3vw, 2.6rem);
+  letter-spacing: -0.04em;
+}
+
+.checkout-summary,
+.checkout-mini {
+  padding: 1rem;
+  border-radius: 1rem;
+  background: rgba(15, 23, 42, 0.82);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.checkout-line {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  align-items: center;
+  padding: 0.65rem 0;
+  color: #e5eefc;
+}
+
+.checkout-line + .checkout-line {
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.checkout-total {
+  font-size: 1.04rem;
+}
+
+.checkout-note {
+  color: rgba(226, 232, 240, 0.76);
+}
+
+.checkout-qr-panel {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.checkout-qr-frame {
+  display: grid;
+  place-items: center;
+  padding: 1rem;
+  border-radius: 1.25rem;
+  background: rgba(248, 250, 252, 0.96);
+  box-shadow: inset 0 0 0 1px rgba(15, 23, 42, 0.06);
+}
+
+.checkout-qr {
+  width: min(100%, 20rem);
+  aspect-ratio: 1;
+  display: block;
+}
+
+.checkout-link-preview {
+  font-size: 0.92rem;
+}
+
 .movie-details-hero .badge {
   letter-spacing: 0.01em;
 }
@@ -649,6 +740,15 @@
 
   .rental-thumb {
     width: 5rem;
+  }
+
+  .checkout-hero {
+    grid-template-columns: 1fr;
+  }
+
+  .checkout-line {
+    flex-direction: column;
+    align-items: flex-start;
   }
 }
 

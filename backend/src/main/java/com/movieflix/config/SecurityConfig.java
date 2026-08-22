@@ -22,7 +22,6 @@ public class SecurityConfig {
 
                 .authorizeHttpRequests(auth -> auth
 
-                        // Public endpoints
                         .requestMatchers(
                                 "/api/auth/**",
                                 "/api/users",
@@ -30,19 +29,14 @@ public class SecurityConfig {
                                 "/api/health"
                         ).permitAll()
 
-                        // Login required
                         .requestMatchers(
-                                "/api/rentals/**"
+                                "/api/rentals/**",
+                                "/api/payments/**"
                         ).authenticated()
 
                         .anyRequest().authenticated()
-                )
-
-                // Enable JWT Bearer authentication
-                .oauth2ResourceServer(oauth2 ->
-                        oauth2.jwt(jwt -> {})
                 );
 
         return http.build();
     }
-}  
+}

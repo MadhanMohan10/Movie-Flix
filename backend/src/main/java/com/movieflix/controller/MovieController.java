@@ -5,8 +5,8 @@ import com.movieflix.dto.TmdbSearchResponse;
 import com.movieflix.service.MovieService;
 
 import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -91,12 +91,28 @@ public class MovieController {
             throw new IllegalArgumentException("Page must be between 1 and 500");
         }
 
-        List<Long> parsedGenreIds = Arrays.stream(genreIds.split(","))
-                .map(String::trim)
-                .filter(value -> !value.isEmpty())
-                .map(Long::valueOf)
-                .filter(value -> value > 0)
-                .collect(Collectors.toList());
+        List<Long> parsedGenreIds = new ArrayList<>();
+        for (String value : genreIds.split(",")) {
+            String trimmed = value.trim();
+
+            if (trimmed.isEmpty()) {
+                continue;
+            }
+
+            long parsedId;
+
+            try {
+                parsedId = Long.parseLong(trimmed);
+            } catch (NumberFormatException exception) {
+                throw new IllegalArgumentException("Genre IDs must be positive");
+            }
+
+            if (parsedId <= 0) {
+                throw new IllegalArgumentException("Genre IDs must be positive");
+            }
+
+            parsedGenreIds.add(parsedId);
+        }
 
         if (parsedGenreIds.isEmpty()) {
             throw new IllegalArgumentException("Genre IDs must be positive");

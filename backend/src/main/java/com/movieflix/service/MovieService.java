@@ -3,6 +3,7 @@ package com.movieflix.service;
 import com.movieflix.client.TmdbClient;
 import com.movieflix.dto.TmdbMovieDetails;
 import com.movieflix.dto.TmdbSearchResponse;
+import com.movieflix.exception.ResourceNotFoundException;
 
 import java.util.List;
 
@@ -22,7 +23,17 @@ public class MovieService {
     }
 
     public TmdbMovieDetails getMovieDetails(Long movieId) {
-        return tmdbClient.getMovieDetails(movieId);
+        try {
+            TmdbMovieDetails movie = tmdbClient.getMovieDetails(movieId);
+            if (movie == null || movie.getId() == null) {
+                throw new ResourceNotFoundException("Movie not found");
+            }
+            return movie;
+        } catch (ResourceNotFoundException exception) {
+            throw exception;
+        } catch (Exception exception) {
+            throw new ResourceNotFoundException("Movie not found");
+        }
     }
 
     public TmdbSearchResponse getPopularMovies(int page) {

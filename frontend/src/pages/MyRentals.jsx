@@ -2,14 +2,13 @@ import { useEffect, useState } from 'react'
 import { getMyRentals } from '../api/rentalApi'
 import { getMovieDetails } from '../api/movieApi'
 import { clearAuth } from '../utils/auth'
+import { readGuestRentals } from '../utils/guestRentals'
 import ErrorMessage from '../components/common/ErrorMessage'
 import Loading from '../components/common/Loading'
 import RentalCard from '../components/rental/RentalCard'
 import { useAuth } from '../hooks/useAuth'
-import { useNavigate } from 'react-router-dom'
 
 export default function MyRentals() {
-  const navigate = useNavigate()
   const { auth, isAuthenticated, logout } = useAuth()
   const [rentals, setRentals] = useState([])
   const [rentalMovies, setRentalMovies] = useState({})
@@ -17,25 +16,16 @@ export default function MyRentals() {
   const [error, setError] = useState(null)
 
   useEffect(() => {
-    if (!isAuthenticated) {
-      navigate('/login')
-      return
-    }
-
     let active = true
 
     async function loadRentals() {
-      if (!auth?.token) {
-        clearAuth()
-        logout()
-        navigate('/login', { replace: true })
-        return
-      }
-
       setLoading(true)
       setError(null)
       try {
-        const data = await getMyRentals(auth.token)
+        const data = isAuthenticated && auth?.token
+          ? await getMyRentals(auth.token)
+          : readGuestRentals()
+
         if (!active) return
         setRentals(data)
 
@@ -60,7 +50,6 @@ export default function MyRentals() {
         if (message.toLowerCase().includes('unauthorized') || message.includes('401')) {
           clearAuth()
           logout()
-          navigate('/login', { replace: true })
           return
         }
 
@@ -75,7 +64,7 @@ export default function MyRentals() {
     return () => {
       active = false
     }
-  }, [auth?.token, isAuthenticated, logout, navigate])
+  }, [auth?.token, isAuthenticated, logout])
 
   return (
     <main className="container-fluid px-4 px-lg-5 py-4">
@@ -105,7 +94,9 @@ export default function MyRentals() {
             ) : (
               <div className="page-card p-4">
                 <h3 className="mb-2">No rentals yet</h3>
-                <p className="text-body-secondary mb-0">Rent a movie from Home and it will show up here.</p>
+                <p className="text-body-secondary mb-0">
+                  Rent a movie from the checkout page and it will show up here.
+                </p>
               </div>
             )}
           </div>
